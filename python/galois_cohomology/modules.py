@@ -68,6 +68,62 @@ class FiniteGroup:
             identity_idx=G.identity_idx * m + H.identity_idx,
         )
 
+    @classmethod
+    def symmetric(cls, n: int) -> FiniteGroup:
+        """Symmetric group S_n on n letters."""
+        from itertools import permutations
+
+        perms = list(permutations(range(n)))
+        order = len(perms)
+        perm_to_idx = {p: i for i, p in enumerate(perms)}
+
+        def compose(p, q):
+            return tuple(p[q[i]] for i in range(n))
+
+        mult_table = np.zeros((order, order), dtype=int)
+        for i, p in enumerate(perms):
+            for j, q in enumerate(perms):
+                mult_table[i, j] = perm_to_idx[compose(p, q)]
+
+        identity = tuple(range(n))
+        return cls(
+            elements=tuple(perms),
+            mult_table=mult_table,
+            identity_idx=perm_to_idx[identity],
+        )
+
+    @classmethod
+    def dihedral(cls, n: int) -> FiniteGroup:
+        """Dihedral group D_n of order 2n (symmetries of regular n-gon)."""
+        order = 2 * n
+        # Elements: r^k (rotation by 2*pi*k/n) and s*r^k (reflection)
+        # r^k encoded as index k, s*r^k as index n+k
+        # Multiplication: r^a * r^b = r^{(a+b) mod n}
+        #                 s*r^a * r^b = s*r^{(a+b) mod n}... wait
+        # Actually: r^a * s*r^b = s*r^{b-a mod n}, s*r^a * s*r^b = r^{b-a mod n}
+        # Standard presentation: r^n = s^2 = e, s*r = r^{-1}*s
+        # So s*r^a = r^{-a}*s and (s*r^a)(s*r^b) = s*r^a*s*r^b = r^{-a}*r^b = r^{b-a}
+        # and r^a * s*r^b = s*r^{b-a} (via sr = r^{-1}s => r*s = s*r^{-1} => r^a*s = s*r^{-a})
+        elements = tuple(range(order))
+        mult_table = np.zeros((order, order), dtype=int)
+
+        for i in range(order):
+            for j in range(order):
+                if i < n and j < n:
+                    # r^i * r^j = r^{(i+j) mod n}
+                    mult_table[i, j] = (i + j) % n
+                elif i < n and j >= n:
+                    # r^i * s*r^{j-n} = s * r^{(j-n)-i mod n}
+                    mult_table[i, j] = n + ((j - n) - i) % n
+                elif i >= n and j < n:
+                    # s*r^{i-n} * r^j = s*r^{(i-n)+j mod n}
+                    mult_table[i, j] = n + ((i - n) + j) % n
+                else:
+                    # s*r^{i-n} * s*r^{j-n} = r^{(j-n)-(i-n) mod n}
+                    mult_table[i, j] = ((j - n) - (i - n)) % n
+
+        return cls(elements=elements, mult_table=mult_table, identity_idx=0)
+
     def validate(self) -> bool:
         n = self.order
         e = self.identity_idx
