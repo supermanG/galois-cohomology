@@ -11,11 +11,11 @@ Build a computational library for Galois cohomology: given a Galois extension L/
 
 | ID | Task | Owner | Status | Handoff |
 |----|------|-------|--------|---------|
-| T1 | Core group cohomology engine (cochains, coboundary maps, H^n) | MAIN | NOT STARTED | HANDOFF_CORE_ENGINE.md |
-| T2 | Galois group construction and action infrastructure | MAIN | NOT STARTED | HANDOFF_GALOIS_INFRA.md |
-| T3 | Resolution and spectral sequence computations (RTSC) | RTSC | NOT STARTED | HANDOFF_RTSC.md |
-| T4 | Long exact sequences and connecting homomorphisms | MAIN | NOT STARTED | HANDOFF_LES.md |
-| T5 | Applications: Brauer group, Hilbert 90, descent | BOTH | NOT STARTED | HANDOFF_APPLICATIONS.md |
+| T1 | Core group cohomology engine (cochains, coboundary maps, H^n) | MAIN | DONE | HANDOFF_CORE_ENGINE.md |
+| T2 | Galois group construction and action infrastructure | MAIN | DONE | HANDOFF_GALOIS_INFRA.md |
+| T3 | Resolution and spectral sequence computations (RTSC) | RTSC | DONE (E2 page; d_r skeletal) | HANDOFF_RTSC.md |
+| T4 | Long exact sequences and connecting homomorphisms | MAIN | DONE | HANDOFF_LES.md |
+| T5 | Applications: Brauer group, Hilbert 90, descent | BOTH | IN PROGRESS | HANDOFF_APPLICATIONS.md |
 
 ## Architecture Overview
 

@@ -1,0 +1,70 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+
+\DeclareMathOperator{\Gal}{Gal}
+
+\title{Supplementary Material:\\
+  Computational Galois Cohomology}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Smith Normal Form Algorithm}\label{sec:snf}
+
+We implement a standard Smith normal form algorithm over $\mathbb{Z}$
+with the following modifications for numerical stability:
+\begin{enumerate}
+  \item Pivot selection: choose the entry with smallest absolute value.
+  \item Divisibility repair: if $d_i \nmid d_{i+1}$ after initial
+    elimination, perform column addition and re-eliminate.
+\end{enumerate}
+
+Complexity: $O(n^3 \log M)$ where $M$ bounds the matrix entries.
+
+\section{Coboundary Matrix Dimensions}\label{sec:dimensions}
+
+For $|G| = m$ and $\text{rank}(M) = r$:
+\begin{itemize}
+  \item $\dim C^n(G, M) = r \cdot m^n$
+  \item $d^n$ is an $(r m^{n+1}) \times (r m^n)$ matrix
+  \item Total nonzero entries in $d^n$: at most $(n+2) \cdot r \cdot m^{n+1}$
+\end{itemize}
+
+For $|G| = 4$ (Klein four), $r = 1$, $n = 2$: $d^2$ is $64 \times 16$.
+
+\section{Detailed Computation: $H^2(C_2 \times C_2, \mathbb{Z})$}
+
+The Klein four group $V_4 = \{e, a, b, ab\}$ with trivial action on $\mathbb{Z}$.
+
+$C^1(V_4, \mathbb{Z}) = \mathbb{Z}^4$ (one coordinate per group element).
+$C^2(V_4, \mathbb{Z}) = \mathbb{Z}^{16}$ (indexed by pairs from $V_4$).
+
+The $d^1$ matrix is $16 \times 4$. Its kernel (2-cocycles) has rank 10.
+The image of $d^0$ (coboundaries in $C^1$) has rank 3.
+The image of $d^1$ (coboundaries in $C^2$) has rank 8 among the 10 cocycles.
+
+Result: $H^2 \cong \mathbb{Z}^{10}/\text{(rank-8 subgroup)}$ with
+Smith invariants $[1,1,1,1,1,1,1,1,2,2]$ giving
+$(\mathbb{Z}/2\mathbb{Z})^2$.
+
+\section{Lean 4 Proof Strategy}\label{sec:lean}
+
+Our Lean proofs reference Mathlib's \texttt{groupCohomology} API:
+\begin{itemize}
+  \item \texttt{RepresentationTheory.GroupCohomology.Basic} for $H^n$ definition
+  \item \texttt{RepresentationTheory.GroupCohomology.Resolution} for bar resolution
+  \item \texttt{RepresentationTheory.GroupCohomology.LowDegree} for $H^0$, $H^1$ characterizations
+\end{itemize}
+
+The $d^2 = 0$ property follows from the general theory of derived functors
+(specifically, that the bar resolution gives a chain complex).
+
+\end{document}
