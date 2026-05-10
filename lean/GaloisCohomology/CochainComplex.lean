@@ -1,36 +1,58 @@
 /-
   GaloisCohomology.CochainComplex
 
-  Verification that the inhomogeneous cochain complex satisfies d^2 = 0.
-  This validates the correctness of our Python coboundary_matrix implementation.
+  Formal verification of the cochain complex structure and cocycle conditions.
 -/
 
 import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
+import Mathlib.RepresentationTheory.Homological.GroupCohomology.LowDegree
 import Mathlib.RepresentationTheory.Homological.Resolution
 import Mathlib.Algebra.Homology.HomologicalComplex
 
+open CategoryTheory groupCohomology Rep
+
+universe u
+
 namespace GaloisCohomology.CochainComplex
 
-/--
-  The inhomogeneous cochain complex C^*(G, M) is indeed a cochain complex,
-  meaning d^{n+1} . d^n = 0. This is built into Mathlib's
-  HomologicalComplex structure via the bar resolution.
-
-  Our Python `coboundary_matrix` computes d^n as an explicit integer matrix.
-  The test suite verifies d^2 = 0 numerically for all groups up to order 5.
--/
-theorem d_squared_eq_zero : True := trivial
+variable {k : Type u} [CommRing k] {G : Type u} [Group G]
 
 /--
-  The coboundary formula we implement:
-
-  (d^n f)(g_0, ..., g_n) = g_0 . f(g_1, ..., g_n)
-      + sum_{i=1}^{n} (-1)^i f(g_0, ..., g_{i-1} g_i, ..., g_n)
-      + (-1)^{n+1} f(g_0, ..., g_{n-1})
-
-  This is the standard inhomogeneous bar complex differential.
-  Mathlib constructs this via `groupCohomology.inhomogeneousCochains`.
+  The inhomogeneous cochain complex satisfies d . d = 0 at every degree.
+  This is the formal verification of our Python `CochainComplex.verify_d_squared`.
 -/
-theorem coboundary_formula_matches_mathlib : True := trivial
+theorem d_comp_d_eq_zero (A : Rep.{u} k G) (i j l : ℕ) :
+    (inhomogeneousCochains A).d i j ≫ (inhomogeneousCochains A).d j l = 0 :=
+  (inhomogeneousCochains A).d_comp_d i j l
+
+/--
+  A function f : G -> A is a 1-cocycle iff f(gh) = g.f(h) + f(g).
+  This is exactly what our `coboundary_matrix(G, M, 1)` checks.
+-/
+theorem mem_cocycles1_iff (A : Rep.{u} k G) (f : G → A) :
+    f ∈ cocycles₁ A ↔ ∀ g h : G, f (g * h) = A.ρ g (f h) + f g :=
+  mem_cocycles₁_iff f
+
+/--
+  Every 1-cocycle sends the identity to 0.
+-/
+theorem cocycle1_at_identity (A : Rep.{u} k G) (f : cocycles₁ A) :
+    (f : G → A) 1 = 0 :=
+  cocycles₁_map_one f
+
+/--
+  Every 1-coboundary is a 1-cocycle (im d^0 is in ker d^1).
+-/
+theorem coboundaries_le_cocycles (A : Rep.{u} k G) :
+    coboundaries₁ A ≤ cocycles₁ A :=
+  coboundaries₁_le_cocycles₁ A
+
+/--
+  For trivial action: all coboundaries are zero.
+  H^1(G, A) = cocycles₁ A / 0 = cocycles₁ A = Hom(G, A).
+-/
+theorem coboundaries_trivial (A : Rep.{u} k G) [A.IsTrivial] :
+    coboundaries₁ A = ⊥ :=
+  coboundaries₁_eq_bot_of_isTrivial A
 
 end GaloisCohomology.CochainComplex
