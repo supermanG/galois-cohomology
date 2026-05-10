@@ -1,0 +1,22 @@
+[project]
+name = "galois-cohomology"
+version = "0.1.0"
+description = "Computational engine for Galois cohomology of number fields"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24",
+    "sympy>=1.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "hypothesis>=6.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
