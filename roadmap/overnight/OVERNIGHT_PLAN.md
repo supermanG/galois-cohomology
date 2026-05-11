@@ -1,7 +1,8 @@
 # Overnight Plan: Galois Cohomology Computation Engine
 
 **Created:** 2026-05-10
-**Status:** IN PROGRESS
+**Last updated:** 2026-05-11
+**Status:** IN PROGRESS (Lean proofs verified, Python engine complete)
 
 ## Mission
 
@@ -16,6 +17,7 @@ Build a computational library for Galois cohomology: given a Galois extension L/
 | T3 | Resolution and spectral sequence computations (RTSC) | RTSC | DONE (E2 page; d_r skeletal) | HANDOFF_RTSC.md |
 | T4 | Long exact sequences and connecting homomorphisms | MAIN | DONE | HANDOFF_LES.md |
 | T5 | Applications: Brauer group, Hilbert 90, descent | BOTH | IN PROGRESS | HANDOFF_APPLICATIONS.md |
+| T6 | Lean 4 formal verification (Mathlib proofs) | MAIN | DONE | (see MAIN_AGENT_LOG.md) |
 
 ## Architecture Overview
 
